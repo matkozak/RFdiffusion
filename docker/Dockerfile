@@ -16,7 +16,7 @@
 #   inference.input_pdb=$HOME/inputs/5TPN.pdb \
 #   inference.num_designs=3 \
 #   'contigmap.contigs=[10-40/A163-181/10-40]'
-ARG CUDA_VERSION=11.6.2
+ARG CUDA_VERSION=11.7.1
 ARG CUDNN_VERSION=8
 ARG UBUNTU_VERSION=20.04
 ARG IMAGE_TYPE=runtime
