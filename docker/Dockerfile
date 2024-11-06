@@ -1,4 +1,4 @@
-# Usage: 
+# Usage:
 # git clone https://github.com/RosettaCommons/RFdiffusion.git
 # cd RFdiffusion
 # docker build -f docker/Dockerfile -t rfdiffusion .
@@ -16,35 +16,42 @@
 #   inference.input_pdb=$HOME/inputs/5TPN.pdb \
 #   inference.num_designs=3 \
 #   'contigmap.contigs=[10-40/A163-181/10-40]'
+ARG CUDA_VERSION=11.6.2
+ARG CUDNN_VERSION=8
+ARG UBUNTU_VERSION=20.04
+ARG IMAGE_TYPE=runtime
 
-FROM nvcr.io/nvidia/cuda:11.6.2-cudnn8-runtime-ubuntu20.04
+# Construct base image string
+ARG BASE_IMAGE=nvcr.io/nvidia/cuda:${CUDA_VERSION}-cudnn${CUDNN_VERSION}-${IMAGE_TYPE}-ubuntu${UBUNTU_VERSION}
+FROM ${BASE_IMAGE}
 
-COPY . /app/RFdiffusion/
+# Install system dependencies
+RUN apt-get -q update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
+        git \
+        python3.9 \
+        python3-pip \
+    && apt-get clean
 
-RUN apt-get -q update \ 
-  && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
-  git \
-  python3.9 \
-  python3-pip \
-  && python3.9 -m pip install -q -U --no-cache-dir pip \
-  && rm -rf /var/lib/apt/lists/* \
-  && apt-get autoremove -y \
-  && apt-get clean \
-  && pip install -q --no-cache-dir \
-  dgl==1.0.2+cu116 -f https://data.dgl.ai/wheels/cu116/repo.html \
-  torch==1.12.1+cu116 --extra-index-url https://download.pytorch.org/whl/cu116 \
-  e3nn==0.3.3 \
-  wandb==0.12.0 \
-  pynvml==11.0.0 \
-  git+https://github.com/NVIDIA/dllogger#egg=dllogger \
-  decorator==5.1.0 \
-  hydra-core==1.3.2 \
-  pyrsistent==0.19.3 \
-  /app/RFdiffusion/env/SE3Transformer \
-  && pip install --no-cache-dir /app/RFdiffusion --no-deps
-  
-WORKDIR /app/RFdiffusion
+WORKDIR /src
 
+# Install base Python tooling and requirements
+COPY requirements.txt .
+RUN python3.9 -m pip install --no-cache-dir -U pip wheel setuptools \
+    && python3.9 -m pip install --no-cache-dir -r requirements.txt
+
+# Install SE3Transformer
+COPY env/SE3Transformer/se3_transformer se3transformer/se3_transformer
+COPY env/SE3Transformer/setup.py se3transformer/
+RUN python3.9 -m pip install --no-cache-dir --no-deps se3transformer/
+
+# Install RFdiffusion
+COPY rfdiffusion rfdiffusion/rfdiffusion
+COPY scripts rfdiffusion/scripts
+COPY setup.py README.md rfdiffusion/
+RUN python3.9 -m pip install --no-cache-dir --no-deps rfdiffusion/
+
+COPY config /usr/local/config
 ENV DGLBACKEND="pytorch"
 
-ENTRYPOINT ["python3.9", "scripts/run_inference.py"]
+ENTRYPOINT ["run_inference.py"]
