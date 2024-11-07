@@ -17,12 +17,11 @@
 #   inference.num_designs=3 \
 #   'contigmap.contigs=[10-40/A163-181/10-40]'
 ARG CUDA_VERSION=11.7.1
-ARG CUDNN_VERSION=8
 ARG UBUNTU_VERSION=22.04
 ARG IMAGE_TYPE=runtime
 
 # Construct base image string
-ARG BASE_IMAGE=nvcr.io/nvidia/cuda:${CUDA_VERSION}-cudnn${CUDNN_VERSION}-${IMAGE_TYPE}-ubuntu${UBUNTU_VERSION}
+ARG BASE_IMAGE=nvcr.io/nvidia/cuda:${CUDA_VERSION}-${IMAGE_TYPE}-ubuntu${UBUNTU_VERSION}
 FROM ${BASE_IMAGE}
 
 # Install system dependencies
