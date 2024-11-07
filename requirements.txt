@@ -9,4 +9,5 @@ pynvml==11.0.0
 pyrsistent==0.19.3
 torch==1.13.1+cu117
 wandb==0.12.0
-git+https://github.com/NVIDIA/dllogger#egg=dllogger
+git+https://github.com/NVIDIA/dllogger@0540a43971f4a8a16693a9de9de73c1072020769
+git+https://github.com/NVIDIA/DeepLearningExamples@297e2853d312f0f13c1fa8951d37821f5f458baa#subdirectory=DGLPyTorch/DrugDiscovery/SE3Transformer
