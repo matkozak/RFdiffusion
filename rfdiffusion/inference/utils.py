@@ -693,7 +693,7 @@ class BlockAdjacency:
         # either list or path to .txt file with list of scaffolds
         if self.conf.scaffoldguided.scaffold_list is not None:
             if type(self.conf.scaffoldguided.scaffold_list) == list:
-                self.scaffold_list = scaffold_list
+                self.scaffold_list = self.conf.scaffoldguided.scaffold_list
             elif self.conf.scaffoldguided.scaffold_list[-4:] == ".txt":
                 # txt file with list of ids
                 list_from_file = []
