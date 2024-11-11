@@ -44,7 +44,7 @@ RUN python3 -m pip install --no-cache-dir -U pip wheel setuptools \
 # Install RFdiffusion
 COPY rfdiffusion rfdiffusion/rfdiffusion
 COPY scripts rfdiffusion/scripts
-COPY setup.py README.md rfdiffusion/
+COPY setup.py README.md MANIFEST.in rfdiffusion/
 RUN python3 -m pip install --no-cache-dir --no-deps rfdiffusion/
 
 COPY config /usr/local/config
