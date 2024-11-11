@@ -40,11 +40,6 @@ COPY requirements.txt .
 RUN python3 -m pip install --no-cache-dir -U pip wheel setuptools \
     && python3 -m pip install --no-cache-dir -r requirements.txt
 
-# Install SE3Transformer
-COPY env/SE3Transformer/se3_transformer se3transformer/se3_transformer
-COPY env/SE3Transformer/setup.py se3transformer/
-RUN python3 -m pip install --no-cache-dir --no-deps se3transformer/
-
 # Install RFdiffusion
 COPY rfdiffusion rfdiffusion/rfdiffusion
 COPY scripts rfdiffusion/scripts
