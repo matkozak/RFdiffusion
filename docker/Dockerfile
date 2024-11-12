@@ -18,7 +18,7 @@
 #   'contigmap.contigs=[10-40/A163-181/10-40]'
 ARG CUDA_VERSION=11.7.1
 ARG CUDNN_VERSION=8
-ARG UBUNTU_VERSION=20.04
+ARG UBUNTU_VERSION=22.04
 ARG IMAGE_TYPE=runtime
 
 # Construct base image string
@@ -29,7 +29,7 @@ FROM ${BASE_IMAGE}
 RUN apt-get -q update \
     && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
         git \
-        python3.9 \
+        python3 \
         python3-pip \
     && apt-get clean
 
@@ -37,19 +37,19 @@ WORKDIR /src
 
 # Install base Python tooling and requirements
 COPY requirements.txt .
-RUN python3.9 -m pip install --no-cache-dir -U pip wheel setuptools \
-    && python3.9 -m pip install --no-cache-dir -r requirements.txt
+RUN python3 -m pip install --no-cache-dir -U pip wheel setuptools \
+    && python3 -m pip install --no-cache-dir -r requirements.txt
 
 # Install SE3Transformer
 COPY env/SE3Transformer/se3_transformer se3transformer/se3_transformer
 COPY env/SE3Transformer/setup.py se3transformer/
-RUN python3.9 -m pip install --no-cache-dir --no-deps se3transformer/
+RUN python3 -m pip install --no-cache-dir --no-deps se3transformer/
 
 # Install RFdiffusion
 COPY rfdiffusion rfdiffusion/rfdiffusion
 COPY scripts rfdiffusion/scripts
 COPY setup.py README.md rfdiffusion/
-RUN python3.9 -m pip install --no-cache-dir --no-deps rfdiffusion/
+RUN python3 -m pip install --no-cache-dir --no-deps rfdiffusion/
 
 COPY config /usr/local/config
 ENV DGLBACKEND="pytorch"
