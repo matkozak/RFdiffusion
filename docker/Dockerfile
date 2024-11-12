@@ -18,7 +18,7 @@
 #   'contigmap.contigs=[10-40/A163-181/10-40]'
 ARG CUDA_VERSION=11.7.1
 ARG UBUNTU_VERSION=22.04
-ARG IMAGE_TYPE=runtime
+ARG IMAGE_TYPE=base
 
 # Construct base image string
 ARG BASE_IMAGE=nvcr.io/nvidia/cuda:${CUDA_VERSION}-${IMAGE_TYPE}-ubuntu${UBUNTU_VERSION}
@@ -30,6 +30,8 @@ RUN apt-get -q update \
         git \
         python3 \
         python3-pip \
+        libcurand10 \
+        libcusparse-11-7 \
     && apt-get clean
 
 WORKDIR /src
